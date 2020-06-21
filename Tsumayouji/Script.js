@@ -476,16 +476,18 @@ const BACKGROUND_COLOR_BOSS = {
     START: Color.rgb(0, 60, 255),
 };
 //#endregion
-/*オブジェクトに継承させるクラス
-Remove:削除命令
-Destroy:削除された時に呼ばれるメソッド
-MoveToDiraction:指定した角度に飛ばす
-MoveToForward:向いている方向に飛ばす
-MoveTowardsPoint:指定した座標の方向へ飛ばす
-MoveTowardsPointFrame:指定した座標の方向へframe数かけて移動する
-IsScreenInside:画面の中にいるかどうか、画面内ならtrue
-RotetaSprite:画像の回転
-*/
+
+/**オブジェクトに継承させるクラス
+ * Remove:削除命令
+ * Destroy:削除された時に呼ばれるメソッド
+ * MoveToDiraction:指定した角度に飛ばす
+ * MoveToForward:向いている方向に飛ばす
+ * MoveTowardsPoint:指定した座標の方向へ飛ばす
+ * MoveTowardsPointFrame:指定した座標の方向へframe数かけて移動する
+ * IsScreenInside:画面の中にいるかどうか、画面内ならtrue
+ * RotetaSprite:画像の回転
+ */
+
 var InstanceObject = enchant.Class.create(enchant.Sprite, {
     //初期化、引数には
     initialize: function (x, y) {
@@ -3349,6 +3351,7 @@ var BackgroundStar = enchant.Class.create(InstanceObject, {
         this.rotate = Rand.RandomRange(0, 360);
         this.rotateSpeed = Rand.RandomRange(5, 20);
         this.rotateDirection = Rand.Choose(1, -1);
+        //雲って名前だけど、このグループに紐付け
         backgroundFogs.addChild(this);
         this.addEventListener(EVENT.ENTER_FRAME, function () {
             if (game.isStopGame == false) {
@@ -3367,7 +3370,6 @@ var BackgroundStar = enchant.Class.create(InstanceObject, {
 var ScoreText = enchant.Class.create(enchant.Label, {
     initialize: function () {
         enchant.Label.call(this);
-        //this = new Label();
         this.font = "22px Meiryo";
         this.color = Color.rgb(255, 255, 255);
         this.width = 400;
@@ -3378,6 +3380,7 @@ var ScoreText = enchant.Class.create(enchant.Label, {
         game.activeScene.addChild(this);
     },
 });
+//ショタアイテムをゲットしたのを表示するUI
 var SyotaUI = enchant.Class.create(InstanceObject, {
     initialize: function (x, y, _syotaNum) {
         InstanceObject.call(this, 32, 32);
@@ -3389,6 +3392,7 @@ var SyotaUI = enchant.Class.create(InstanceObject, {
         game.activeScene.addChild(this);
     },
 });
+//UIの下にある黒い四角形
 var BackgroundBottom = enchant.Class.create(InstanceObject, {
     initialize: function (x, y) {
         InstanceObject.call(this, 500, 40);
@@ -3399,6 +3403,8 @@ var BackgroundBottom = enchant.Class.create(InstanceObject, {
         UIsBack.addChild(this);
     },
 });
+//テキストを表示するときに使うクラス
+//今の所継承用だけどもっと使えば良かったかも
 var TextClass = enchant.Class.create(enchant.Label, {
     initialize: function (x, y, _text, _font, _color) {
         enchant.Label.call(this);
@@ -3410,6 +3416,7 @@ var TextClass = enchant.Class.create(enchant.Label, {
         game.activeScene.addChild(this);
     },
 });
+//タイトル画面に表示するコピーライト画像
 var CopyRightClass = enchant.Class.create(InstanceObject, {
     initialize: function (x, y) {
         InstanceObject.call(this, 365, 26);
@@ -3418,6 +3425,8 @@ var CopyRightClass = enchant.Class.create(InstanceObject, {
         game.rootScene.addChild(this);
     },
 });
+//枠付きのテキスト表示クラス
+//ボタンとして活用
 var TextFrame = enchant.Class.create(TextClass, {
     initialize: function (x, y, _text, _font, _color) {
         TextClass.call(this, x, y, _text, _font, _color);
@@ -3465,7 +3474,7 @@ var PlayerHeartUI = enchant.Class.create(InstanceObject, {
         UIs.addChild(this);
     },
 });
-
+//チュートリアル画像
 var TutorialSprite = enchant.Class.create(InstanceObject, {
     initialize: function (x, y) {
         InstanceObject.call(this, 500, 850);
@@ -3483,11 +3492,15 @@ var TutorialSprite = enchant.Class.create(InstanceObject, {
     },
 });
 //#endregion
-
+/**サウンドルームクラス
+ * ボタンの生成が主
+ * 再生していない時はnowBGMに-1を代入し、-1が入っている時はstopメソッドを呼ばないようにしている
+ */
 SoundRoomClass = enchant.Class.create(InstanceObject, {
     initialize: function (x, y) {
         InstanceObject.call(this, 0, 0);
         game.assets[game.nowBGM].stop();
+        //初期設定
         game.nowBGM = -1;
         game.soundNum = 5;
         game.chooseNum = 0;
@@ -3499,11 +3512,13 @@ SoundRoomClass = enchant.Class.create(InstanceObject, {
         this.ScrollButtonInit();
         this.BackButtonInit();
     },
+    //音楽を配列に代入
     SoundInit: function () {
         this.soundList = new Array(game.soundNum);
         for (let i = 0; i < this.soundList.length; i++) {
             this.soundList[i] = _soundsArray[i];
         }
+        //こっちは名前
         this.soundName = new Array(game.soundNum);
         this.soundName[SOUNDS_NUMBER.NORMAL_BGM] = "ノーマルモード";
         this.soundName[SOUNDS_NUMBER.MIDDLE_BOSS_BGM] = "ボスモード";
@@ -3511,6 +3526,7 @@ SoundRoomClass = enchant.Class.create(InstanceObject, {
         this.soundName[SOUNDS_NUMBER.GAMEOVER_BGM] = "ゲームオーバー";
         this.soundName[SOUNDS_NUMBER.BOSS_FANFARE] = "ゲームクリア";
     },
+    //曲名を表示するラベル生成
     LabelInit: function () {
         game.soundNameText = new Label();
         game.soundNameText.font = Font.SetMeiryo(22);
@@ -3520,6 +3536,7 @@ SoundRoomClass = enchant.Class.create(InstanceObject, {
         game.soundNameText.text = this.soundName[game.chooseNum];
         game.activeScene.addChild(game.soundNameText);
     },
+    //再生ボタン生成と再生処理
     PlayButtonInit: function () {
         this.PlayButton = new Sprite(64, 64);
         this.PlayButton.frame = 0;
@@ -3542,6 +3559,7 @@ SoundRoomClass = enchant.Class.create(InstanceObject, {
             PlaySoundLoop(this.soundList[game.chooseNum]);
         });
     },
+    //停止ボタン生成と停止処理
     StopButtonInit: function () {
         this.StopButton = new Sprite(64, 64);
         this.StopButton.frame = 0;
@@ -3560,7 +3578,9 @@ SoundRoomClass = enchant.Class.create(InstanceObject, {
             }
         });
     },
+    //曲選択ボタン生成と、曲変更処理
     ScrollButtonInit: function () {
+        //左ボタン
         this.ScrollButtonLeft = new Sprite(64, 64);
         this.ScrollButtonLeft.frame = 0;
         this.ScrollButtonLeft.image =
@@ -3580,7 +3600,7 @@ SoundRoomClass = enchant.Class.create(InstanceObject, {
             }
             game.soundNameText.text = this.soundName[game.chooseNum];
         });
-
+        //右ボタン
         this.ScrollButtonRight = new Sprite(64, 64);
         this.ScrollButtonRight.frame = 2;
         this.ScrollButtonRight.image =
@@ -3602,6 +3622,7 @@ SoundRoomClass = enchant.Class.create(InstanceObject, {
             game.soundNameText.text = this.soundName[game.chooseNum];
         });
     },
+    //戻るボタン生成とモード選択画面に戻る処理
     BackButtonInit: function () {
         this.backButton = new Sprite(128, 128);
         this.backButton.frame = 0;
@@ -3736,6 +3757,9 @@ class SceneClass {
         game.pushScene(this.scene);
         game.activeScene = this.scene;
         console.log("push");
+        console.log(
+            `previousScene : ${game.previousScene.name} activeScene : ${game.activeScene.name}`
+        );
     }
     //シーンを外す
     Pop() {
@@ -3743,6 +3767,9 @@ class SceneClass {
         game.popScene(this.scene);
         game.activeScene = game.previousScene;
         console.log("Pop");
+        console.log(
+            `previousScene : ${game.previousScene.name} activeScene : ${game.activeScene.name}`
+        );
     }
     //シーンを切り替える
     Replace() {
@@ -3759,7 +3786,6 @@ class SceneClass {
         if (scene.childNodes.length != 0) {
             while (scene.firstChild) {
                 scene.removeChild(scene.firstChild);
-                console.log("削除なう");
                 delete scene.firstChild;
             }
         }
@@ -3801,6 +3827,7 @@ class TitleScene extends SceneClass {
         var copyRight = new CopyRightClass(65, 700);
     }
 }
+//モード選択シーン
 class ModeSelectScene extends SceneClass {
     constructor() {
         super();
@@ -3869,6 +3896,7 @@ class ModeSelectScene extends SceneClass {
         });
     }
 }
+//ボスの難易度選択シーン
 class LevelChooseScene extends SceneClass {
     constructor() {
         super();
@@ -3891,6 +3919,7 @@ class LevelChooseScene extends SceneClass {
             _hagekasuModeText,
         ];
         var buttonSpace = 200;
+        //Extremeをクリアしたか否かでハゲカスを追加する処理
         var _levelModeButton = new Array(4);
         if (s_isExtremeClear == 1) {
             _levelModeButton = new Array(5);
@@ -3904,6 +3933,7 @@ class LevelChooseScene extends SceneClass {
                 Font.SetMeiryo(20),
                 Color.rgb(0, 0, 0)
             );
+            //タッチしたときにボスの難易度を決めている
             _levelModeButton[i]._sprite.addEventListener(
                 EVENT.TOUCH_END,
                 function () {
@@ -3916,6 +3946,7 @@ class LevelChooseScene extends SceneClass {
         }
     }
 }
+//ノーマルモードシーン
 class NormalModeScene extends SceneClass {
     constructor() {
         super();
@@ -3931,10 +3962,10 @@ class NormalModeScene extends SceneClass {
         this.ReadyStartUpdate();
     }
     Main() {
+        //プレイヤー生成
         player = new Player(247, 500);
         GameManager.GameManagerUpdate();
 
-        // var leafVillans = new LeafVillain(200, 50, LEAF_VILLAN_COLOR.GREEN);
         game.assets[_soundsArray[SOUNDS_NUMBER.TITLE_BGM]].stop();
         game.background = new BackGroundClass(
             BACKGROUND_COLOR_NORMAL.START,
@@ -3962,6 +3993,7 @@ class NormalModeScene extends SceneClass {
         });
     }
     Update() {
+        //敵生成、アイテム生成、ショタアイテム生成、レベル処理をここで行う
         EnemyCreate();
         ItemCreate();
         SyotaItemCreate();
@@ -3988,6 +4020,7 @@ class BossBattleModeScene extends SceneClass {
         this.ReadyStartUpdate();
     }
     Main() {
+        //プレイヤーとボス生成
         player = new BossPlayer(247, 500);
         GameManager.GameManagerUpdate();
         boss = new LeafVillainBoss(64, 64);
@@ -4041,6 +4074,7 @@ class GameOverScene extends SceneClass {
             BACKGROUND_COLOR_RESULT.START,
             BACKGROUND_COLOR_RESULT.END
         );
+        //ノーマルモードをボスモードで処理するメソッドを変更
         if (game.chooseMode == GAME_MODE.NORMAL) {
             this.NormalTextCreate();
             this.NormalButtonCreate();
@@ -4161,13 +4195,14 @@ class GameOverScene extends SceneClass {
         });
     }
 }
-
+//ゲームクリアシーン
 class GameClearScene extends SceneClass {
     constructor() {
         super();
         this.scene.name = "ゲームクリアシーン";
         this.Replace();
         game.score = score;
+        //Extremeをクリアした場合、ローカルストレージのクリア記録を保存
         if (game.bossLevelNum == BOSS_LEVEL.EXTREME) {
             if (window.localStorage) {
                 s_isExtremeClear = 1;
@@ -4301,13 +4336,15 @@ function GameVariableInit() {
     game.isTouch = false;
     //タッチした時のタッチx座標
     game.touchStartX = 0;
-
+    //ゲームが動いているか否か
     game.isStopGame = false;
+    //現在のシーン
     game.activeScene;
+    //ひとつ前のシーン
     game.previousScene;
     //手にしているショタアイテムの個数
     game.syotaItemGetCount = 0;
-
+    //プレイヤーが無敵かどうか
     game.isPlayerInvincivle = false;
     //ショタ格納定数
     game.syotaNumber = {
@@ -4325,7 +4362,7 @@ function GameVariableInit() {
     //ツイート用変数設定
     game.modeText = "";
     game.score = score;
-
+    //アイテムを装備中かどうか
     game.isItemEquipment = false;
 }
 //BGM再生
@@ -4336,6 +4373,7 @@ function PlaySoundLoop(_sound) {
     game.nowBGM = _sound;
     // }
 }
+//ループしないBGM再生処理
 function PlaySound(_sound) {
     //if (Sound.src) {
     game.assets[_sound].play();
@@ -4374,6 +4412,7 @@ function EnemyCreate() {
                 if (maxEnemyLength > 20) {
                     maxEnemyLength = 20;
                 }
+                //敵が画面表示数の限界以下の場合敵を生成
                 if (enemys.childNodes.length < maxEnemyLength) {
                     var _leafVillanColor = Rand.Choose(
                         LEAF_VILLAN_COLOR.GREEN,
@@ -4453,7 +4492,7 @@ function ItemCreate() {
                 default:
                     break;
             }
-
+            //スコアによって生成間隔を変える
             if (score > 40000) {
                 minInterval = 100;
                 MaxInterval = 230;
@@ -4485,6 +4524,7 @@ function SyotaItemCreate() {
                     Rand.RandomRange(100, SCREEN_WIDTH - 100),
                     -100
                 );
+                //スコアによって生成間隔を変える
                 if (score > 40000) {
                     minInterval = 300;
                     MaxInterval = 420;
@@ -4504,6 +4544,7 @@ function Retry() {
     game.assets[game.nowBGM].stop();
     SceneClass.RemoveScene(game.NormalModeScene.scene);
     delete enemys;
+    //全てのグループをリセット(メソッドにしろ)
     enemys = new Group();
     items = new Group();
     enemyShoots = new Group();
@@ -4515,8 +4556,10 @@ function Retry() {
     UIsBack = new Group();
     UIs = new Group();
     leafShilds = new Group();
+    //ゲームの全体の初期値をリセット
     GameVariableInit();
     score = 0;
+    //モード選択画面に戻るのでBGMをタイトル画面のBGMに
     PlaySoundLoop(_soundsArray[SOUNDS_NUMBER.TITLE_BGM]);
     for (let i = 0; i < _syotaItemUI.length; i++) {
         _syotaItemUI[i].visible = false;
