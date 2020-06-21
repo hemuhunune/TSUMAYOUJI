@@ -1,0 +1,13 @@
+[css firstline=”1″ highlight=”1,2,3,4,5,6,7,8″ title=”main.css”]
+@font-face {
+font-family: "PixelMplus12";
+src: url(‘../Font/PixelMplus12-Regular.woff’) format(‘woff’), /* Modern Browsers */
+url(‘../Font/PixelMplus12-Regular.ttf’) format(‘truetype’), /* Safari, Android, iOS */
+}
+
+body {
+background: #000;
+padding: 0;
+margin: 0;
+}
+[/css]
